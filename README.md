@@ -1,6 +1,6 @@
 # Ревью №1. Шифратор
 
-##Settings
+**Settings**
 
 ```bash
 process        #set encryptor process
@@ -19,7 +19,7 @@ process        #set encryptor process
                default = "latin"
 ```
 
-##Usage example
+**Usage example**
 
 Закодировать книжку шифром Цезаря с ключом `13` и положить в `input.txt`
 
