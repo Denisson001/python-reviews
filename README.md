@@ -13,7 +13,7 @@ process        #set encryptor process
 --output-file  #set output file
                default = "stdout"
 --text-file    #set input file to train a language model
---model-file   #set file to save language model, REQUIRED for train mode
+--model-file   #set language model file, REQUIRED for train and hack mode
 --language     #set language 
                choices = ["latin", "cyrillic"]
                default = "latin"
