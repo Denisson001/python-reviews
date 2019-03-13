@@ -6,8 +6,8 @@
 process        #set encryptor process
                choices = ["encode", "decode", "train", "hack"]
 --cipher       #set encryption type
-               choices = ["caesar", "vigenere"] 
---key          #set encryption key - any integer for Caesar cipher, lower case string for Vigenere cipher
+               choices = ["caesar", "vigenere", "vernam"] 
+--key          #set encryption key - any integer for Caesar or Vernam cipher, lower case string for Vigenere cipher
 --input-file   #set input file
                default = "stdin"
 --output-file  #set output file
@@ -55,4 +55,11 @@ python3 encryptor.py hack --input-file input.txt --output-file output.txt --mode
 python3 encryptor.py encode --cipher caesar --key 21 --input-file books/bulgakov_master_and_margarita_ru.txt --output-fil input.txt --language cyrillic
 python3 encryptor.py train --text-file books/dostoevsky_crime_and_punishment.txt --model-file model.txt --language cyrillic
 python3 encryptor.py hack --input-file input.txt --output-file output.txt --model-file model.txt --language cyrillic
+```
+Закодировать книжку шифром Вернама с ключом `1234567890` и положить в `input.txt`
+
+Раскодировать книжку из `input.txt` и положить в `output.txt` 
+```
+python3 encryptor.py encode --cipher vernam --key 1234567890 --input-file books/orwell_1984_en.txt --output-file input.txt
+python3 encryptor.py decode --cipher vernam --key 1234567890 --input-file input.txt --output-file output.txt
 ```

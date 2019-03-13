@@ -4,6 +4,7 @@ import modules.vigenere as vigenere
 import modules.train as train
 import modules.hack as hack
 import modules.helper as helper
+import modules.vernam as vernam
 
 def run():
 	args = helper.parse_args()

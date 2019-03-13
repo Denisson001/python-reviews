@@ -1,0 +1,2 @@
+python3 encryptor.py encode --cipher vigenere --key lemon --input-file books/shakespeare_the_tragedy_of_hamlet_en.txt --output-file input.txt
+python3 encryptor.py decode --cipher vigenere --key lemon --input-file input.txt --output-fil output.txt

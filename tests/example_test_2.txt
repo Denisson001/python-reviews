@@ -1,0 +1,2 @@
+python3 encryptor.py encode --cipher caesar --key 17 --input-file books/bulgakov_master_and_margarita_ru.txt --output-file input.txt --language cyrillic
+python3 encryptor.py decode --cipher caesar --key 17 --input-file input.txt --output-file output.txt  --language cyrillic

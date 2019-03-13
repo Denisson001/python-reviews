@@ -32,7 +32,7 @@ def print_data(char_counter, model_file_name, lang):
 def parse_args():
 	parser = argparse.ArgumentParser()
 	parser.add_argument("process", choices = ["encode", "decode", "train", "hack"])
-	parser.add_argument("--cipher", choices = ["caesar", "vigenere"])
+	parser.add_argument("--cipher", choices = ["caesar", "vigenere", "vernam"])
 	parser.add_argument("--key")
 	parser.add_argument("--input-file")
 	parser.add_argument("--output-file")
@@ -42,19 +42,34 @@ def parse_args():
 	return parser.parse_args()
 
 def check_args_correctness(args):
+	if (args.input_file is not None and args.output_file == args.input_file):
+		print("ERROR: input file and output file are the same")
+		exit()
+
+	if (args.process == "train" and args.text_file is not None and args.text_file == args.model_file):
+		print("ERROR: text file and model file are the same")
+		exit()
+
 	if (args.process == "train" and args.model_file is None):
-		print("model file not setted")
+		print("ERROR: model file not setted")
 		exit()
 
 	if ((args.process == "encode" or args.process == "decode") and args.cipher == "caesar"):
 		try:
 			args.key = int(args.key)
 		except:
-			print("key isn't an integer")
+			print("ERROR: key isn't an integer")
 			exit()
 
 	if ((args.process == "encode" or args.process == "decode") and args.cipher == "vigenere"):
 		for c in args.key:
 			if (c not in lang_keeper(args.language).alphabet):
-				print("wrong key")
+				print("ERROR: wrong key")
 				exit()
+
+	if ((args.process == "encode" or args.process == "decode") and args.cipher == "vernam"):
+		try:
+			args.key = int(args.key)
+		except:
+			print("ERROR: key isn't an integer")
+			exit()
