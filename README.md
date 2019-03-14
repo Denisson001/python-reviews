@@ -8,8 +8,8 @@ process        #set encryptor process
 --cipher       #set encryption type
                choices = ["caesar", "vigenere", "vernam"] 
 --key          #set encryption key - any integer for Caesar or Vernam cipher, non empty lowercase string for Vigenere cipher,
-			   #max key length (positive integer) for hack Vigenere cipher
-			   #REQUIRED for encode, decode and hack-vigenere processes
+	       #max key length (positive integer) for hack Vigenere cipher process
+	       #REQUIRED for encode, decode and hack-vigenere processes
 --input-file   #set input file
                default = "stdin"
 --output-file  #set output file
