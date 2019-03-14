@@ -8,7 +8,7 @@ counter=0
 for file in $directory_name/$catalog_name/*
 do
 	(( counter++ ))
-	echo "running test №$counter:"
+	echo "running on test №$counter:"
 	flag=1
 	while read line
 	do
