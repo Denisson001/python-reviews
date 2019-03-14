@@ -5,6 +5,7 @@ import modules.train as train
 import modules.hack as hack
 import modules.helper as helper
 import modules.vernam as vernam
+import modules.hack_vigenere as hack_vigenere
 
 def run():
 	args = helper.parse_args()
@@ -22,5 +23,8 @@ def run():
 		module_name = sys.modules["modules." + args.cipher]
 		func_name = args.cipher + "_encryptor";
 		getattr(module_name, func_name)(args.input_file, args.output_file, args.process, args.key, args.language)
+
+	elif (args.process == "hack-vigenere"):
+		hack_vigenere.hack_vigenere(args.input_file, args.output_file, args.model_file, args.key, args.language)
 
 run()

@@ -16,14 +16,14 @@ do
 		then
 			break
 		fi
-		
-	    eval "$line" || flag=0
+
+		eval "$line" || flag=0
 	done < $file
 
 	if [ $flag -eq 0 ]
-    then
-    	break
-    fi
+	then
+		break
+	fi
 
 	echo "OK"
 done
