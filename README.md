@@ -7,15 +7,18 @@ process        #set encryptor process
                choices = ["encode", "decode", "train", "hack", hack-vigenere]
 --cipher       #set encryption type
                choices = ["caesar", "vigenere", "vernam"] 
+               #REQUIRED for encode and decode processes
 --key          #set encryption key - any integer for Caesar or Vernam cipher, non empty lowercase string for Vigenere cipher,
-	       #max key length (positive integer) for hack Vigenere cipher process
-	       #REQUIRED for encode, decode and hack-vigenere processes
+               #max key length (positive integer) for hack Vigenere cipher process
+               #REQUIRED for encode, decode and hack-vigenere processes
 --input-file   #set input file
                default = "stdin"
 --output-file  #set output file
                default = "stdout"
 --text-file    #set input file to train a language model
---model-file   #set language model file, REQUIRED for train, hack and hack-vigenere processes
+               default = "stdin"
+--model-file   #set language model file
+               #REQUIRED for train, hack and hack-vigenere processes
 --language     #set language 
                choices = ["latin", "cyrillic"]
                default = "latin"
