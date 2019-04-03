@@ -1,7 +1,3 @@
-import sys
-import modules.helper as helper
-
-
 class key_keeper:
     def __init__(self, key):
         self.key = key
@@ -13,40 +9,32 @@ class key_keeper:
         return c
 
 
-def vigenere_encryptor(input_file_name, output_file_name, process, key, lang):
+def encode_vigenere_cipher(input_file, output_file, key, lang):
     key = key_keeper(key)
-    encryptor = helper.lang_keeper(lang)
-    with open(input_file_name, "r") if input_file_name is not None else sys.stdin as input_file:
-        with open(output_file_name, "w") if output_file_name is not None else sys.stdout as output_file:
-            for line in input_file:
-                module_name = sys.modules[__name__]
-                func_name = "vigenere_" + process + "r"
-                output_file.write(getattr(module_name, func_name)(line, key, encryptor))
+    for line in input_file:
+        result = ""
+        for c in line:
+            if c.lower() in lang.alphabet:
+                new_c = lang.transform(c.lower(), key.get_next_char())
+                if c.lower() != c:
+                    new_c = new_c.upper()
+                result += new_c
+            else:
+                result += c
+        output_file.write(result)
 
 
-def vigenere_encoder(line, key, encryptor):
-    result = ""
-    for c in line:
-        if c.lower() in encryptor.alphabet:
-            new_c = encryptor.transform(c.lower(), key.get_next_char())
-            if c.lower() != c:
-                new_c = new_c.upper()
-            result += new_c
-        else:
-            result += c
-    return result
-
-
-def vigenere_decoder(line, key, encryptor):
-    result = ""
-    for c in line:
-        if c.lower() in encryptor.alphabet:
-            reverse_char = encryptor.num_to_alpha[
-                -encryptor.alpha_to_num[key.get_next_char()] % len(encryptor.alphabet)]
-            new_c = encryptor.transform(c.lower(), reverse_char)
-            if c.lower() != c:
-                new_c = new_c.upper()
-            result += new_c
-        else:
-            result += c
-    return result
+def decode_vigenere_cipher(input_file, output_file, key, lang):
+    key = key_keeper(key)
+    for line in input_file:
+        result = ""
+        for c in line:
+            if c.lower() in lang.alphabet:
+                reverse_char = lang.num_to_alpha[-lang.alpha_to_num[key.get_next_char()] % len(lang.alphabet)]
+                new_c = lang.transform(c.lower(), reverse_char)
+                if c.lower() != c:
+                    new_c = new_c.upper()
+                result += new_c
+            else:
+                result += c
+        output_file.write(result)

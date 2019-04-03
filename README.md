@@ -3,25 +3,26 @@
 **Settings**
 
 ```bash
-process        #set encryptor process
-               choices = ["encode", "decode", "train", "hack", hack-vigenere]
---cipher       #set encryption type
-               choices = ["caesar", "vigenere", "vernam"] 
-               #REQUIRED for encode and decode processes
---key          #set encryption key - any integer for Caesar or Vernam cipher, non empty lowercase string for Vigenere cipher,
-               #max key length (positive integer) for hack Vigenere cipher process
-               #REQUIRED for encode, decode and hack-vigenere processes
---input-file   #set input file
-               default = "stdin"
---output-file  #set output file
-               default = "stdout"
---text-file    #set input file to train a language model
-               default = "stdin"
---model-file   #set language model file
-               #REQUIRED for train, hack and hack-vigenere processes
---language     #set language 
-               choices = ["latin", "cyrillic"]
-               default = "latin"
+mode             #set encryptor mode
+                 choices = ["encode", "decode", "train", "hack", hack-vigenere]
+--cipher         #set encryption type
+                 choices = ["caesar", "vigenere", "vernam"] 
+                 #REQUIRED for encode and decode modes
+--key            #set encryption key - any integer for Caesar or Vernam cipher, non empty lowercase string for Vigenere cipher,
+                 #REQUIRED for encode and decode modes
+--key-max-length #max key length (positive integer) for hack Vigenere cipher mode
+                 #REQUIRED for hack-vigenere mode
+--input-file     #set input file
+                 default = "stdin"
+--output-file    #set output file
+                 default = "stdout"
+--text-file      #set input file to train a language model
+                 default = "stdin"
+--model-file     #set language model file
+                 #REQUIRED for train, hack and hack-vigenere processes
+--language       #set language 
+                 choices = ["latin", "cyrillic"]
+                 default = "latin"
 ```
 
 **Usage example**
@@ -76,7 +77,7 @@ python3 encryptor.py decode --cipher vernam --key 1234567890 --input-file input.
 ```
 python3 encryptor.py encode --cipher vigenere --key pineapple --input-file books/random_text_en.txt --output-file input.txt
 python3 encryptor.py train --text-file books/orwell_1984_en.txt --model-file model.txt
-python3 encryptor.py hack-vigenere --key 10 --input-file input.txt --output-file output.txt --model-file model.txt
+python3 encryptor.py hack-vigenere --key-max-length 10 --input-file input.txt --output-file output.txt --model-file model.txt
 ```
 Запустить шифратор на тестах
 ```

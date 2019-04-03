@@ -1,17 +1,52 @@
 import sys
 import argparse
+from contextlib import contextmanager
+import os
 
 
 def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("process", choices=["encode", "decode", "train", "hack", "hack-vigenere"])
-    parser.add_argument("--cipher", choices=["caesar", "vigenere", "vernam"])
-    parser.add_argument("--key")
-    parser.add_argument("--input-file")
-    parser.add_argument("--output-file")
-    parser.add_argument("--text-file")
-    parser.add_argument("--model-file")
-    parser.add_argument("--language", choices=["latin", "cyrillic"], default="latin")
+    parser = argparse.ArgumentParser(description="You can encode/decode/hack caesar/vigenere/vernam cipher or train a simple language model")
+    subparsers = parser.add_subparsers()
+
+    parser.set_defaults(mode=None)
+
+    encode_subparser = subparsers.add_parser("encode", formatter_class=argparse.ArgumentDefaultsHelpFormatter, help="encode text")
+    encode_subparser.set_defaults(mode="encode")
+    encode_subparser.add_argument("--cipher", choices=["caesar", "vigenere", "vernam"], required=True, help="Set cipher type")
+    encode_subparser.add_argument("--key", required=True, help="Set cipher key")
+    encode_subparser.add_argument("--input-file", type=argparse.FileType('r'), default=sys.stdin, help="Set input file")
+    encode_subparser.add_argument("--output-file", type=argparse.FileType('w'), default=sys.stdout, help="Set output file")
+    encode_subparser.add_argument("--language", choices=["latin", "cyrillic"], default="latin", help="Set language")
+
+    decode_subparser = subparsers.add_parser("decode", formatter_class=argparse.ArgumentDefaultsHelpFormatter, help="decode text")
+    decode_subparser.set_defaults(mode="decode")
+    decode_subparser.add_argument("--cipher", choices=["caesar", "vigenere", "vernam"], required=True, help="Set cipher type")
+    decode_subparser.add_argument("--key", required=True, help="Set cipher key")
+    decode_subparser.add_argument("--input-file", type=argparse.FileType('r'), default=sys.stdin, help="Set input file")
+    decode_subparser.add_argument("--output-file", type=argparse.FileType('w'), default=sys.stdout, help="Set output file")
+    decode_subparser.add_argument("--language", choices=["latin", "cyrillic"], default="latin", help="Set language")
+
+    train_subparser = subparsers.add_parser("train", formatter_class=argparse.ArgumentDefaultsHelpFormatter, help="train a simple language model")
+    train_subparser.set_defaults(mode="train")
+    train_subparser.add_argument("--text-file", type=argparse.FileType('r'), default=sys.stdin, help="Set text file")
+    train_subparser.add_argument("--model-file", type=argparse.FileType('w'), required=True, help="Set model file")
+    train_subparser.add_argument("--language", choices=["latin", "cyrillic"], default="latin", help="Set language")
+
+    hack_subparser = subparsers.add_parser("hack", formatter_class=argparse.ArgumentDefaultsHelpFormatter, help="hack text that was encoded with caesar cipher")
+    hack_subparser.set_defaults(mode="hack")
+    hack_subparser.add_argument("--input-file", type=argparse.FileType('r'), default=sys.stdin, help="Set input file")
+    hack_subparser.add_argument("--output-file", type=argparse.FileType('w'), default=sys.stdout, help="Set output file")
+    hack_subparser.add_argument("--model-file", type=argparse.FileType('r'), default=sys.stdin, required=True, help="Set model file")
+    hack_subparser.add_argument("--language", choices=["latin", "cyrillic"], default="latin", help="Set language")
+
+    hack_vigenere_subparser = subparsers.add_parser("hack-vigenere", formatter_class=argparse.ArgumentDefaultsHelpFormatter, help="hack text that was encoded with vigenere cipher")
+    hack_vigenere_subparser.set_defaults(mode="hack-vigenere")
+    hack_vigenere_subparser.add_argument("--input-file", type=argparse.FileType('r'), default=sys.stdin, help="Set input file")
+    hack_vigenere_subparser.add_argument("--output-file", type=argparse.FileType('w'), default=sys.stdout, help="Set output file")
+    hack_vigenere_subparser.add_argument("--model-file", type=argparse.FileType('r'), default=sys.stdin, required=True, help="Set model file")
+    hack_vigenere_subparser.add_argument("--key-max-length", required=True, type=int, help="Set key max length")
+    hack_vigenere_subparser.add_argument("--language", choices=["latin", "cyrillic"], default="latin", help="Set language")
+
     return parser.parse_args()
 
 
@@ -21,15 +56,14 @@ def stop_encryptor(error_message):
 
 
 def check_args_correctness(args):
-    if args.process == "encode" or args.process == "decode":
+    args.language = lang_keeper(args.language)
+
+    if args.mode is None:
+        stop_encryptor("mode isn`t setted")
+
+    if args.mode == "encode" or args.mode == "decode":
         if args.input_file is not None and args.output_file == args.input_file:
             stop_encryptor("input file and output file are the same")
-
-        if args.cipher is None:
-            stop_encryptor("cipher isn`t setted")
-
-        if args.key is None:
-            stop_encryptor("key isn`t setted")
 
         if args.cipher == "caesar" or args.cipher == "vernam":
             try:
@@ -42,20 +76,14 @@ def check_args_correctness(args):
                 stop_encryptor("wrong key")
 
             for c in args.key:
-                if c not in lang_keeper(args.language).alphabet:
+                if c not in args.language.alphabet:
                     stop_encryptor("wrong key")
 
-    if args.process == "train":
-        if args.model_file is None:
-            stop_encryptor("model file not setted")
-
+    if args.mode == "train":
         if args.text_file is not None and args.text_file == args.model_file:
             stop_encryptor("text file and model file are the same")
 
-    if args.process == "hack" or args.process == "hack-vigenere":
-        if args.model_file is None:
-            stop_encryptor("model file not setted")
-
+    if args.mode == "hack" or args.mode == "hack-vigenere":
         if args.model_file == args.input_file:
             stop_encryptor("input file and model file are the same")
 
@@ -65,17 +93,11 @@ def check_args_correctness(args):
         if args.output_file is not None and args.input_file == args.output_file:
             stop_encryptor("input file and output file are the same")
 
-    if args.process == "hack-vigenere":
-        try:
-            args.key = int(args.key)
-        except:
-            stop_encryptor("key isn't an integer")
-
 
 class lang_keeper:
     def __init__(self, lang):
         self.alpha_to_num = dict()
-        self.lang = lang
+        self.type = lang
 
         if lang == "latin":
             for c in range(ord("z") - ord("a") + 1):
@@ -94,25 +116,19 @@ class lang_keeper:
         return self.num_to_alpha[(self.alpha_to_num[c1] + self.alpha_to_num[c2]) % len(self.alphabet)]
 
 
-def save_input(input_file_name, copied_input_file_name):
-    with open(copied_input_file_name, "w") as output_file:
-        with open(input_file_name, "r") if input_file_name is not None else sys.stdin as input_file:
-            for line in input_file:
-                output_file.write(line)
+@contextmanager
+def remove_file(path):
+    try:
+        file = open(path, "w")
+        file.close()
+        yield
+    finally:
+        os.remove(path)
 
 
-def print_data(char_counter, model_file_name, lang):
-    lang = lang_keeper(lang)
-    with open(model_file_name, "w") if model_file_name is not None else sys.stdout as output_file:
-        for i in range(len(lang.alphabet)):
-            output_file.write("\'" + lang.num_to_alpha[i] + "\': " + str(char_counter[i]) + "\n")
-
-
-def normalize_vector(v):
-    s = sum(v)
-    for i in range(len(v)):
-        v[i] /= s
-    return v
+def save_input(input_file, output_file):
+    for line in input_file:
+        output_file.write(line)
 
 
 def standard_deviation(a, b):

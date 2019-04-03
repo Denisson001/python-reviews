@@ -1,11 +1,8 @@
-import sys
 import modules.helper as helper
-import modules.train as train
 import modules.hack as hack
 
 
 def calc_index_vector(input_file_name, period_len, lang):
-    lang = helper.lang_keeper(lang)
     char_counter = [[0] * len(lang.alphabet) for i in range(period_len)]
     pos = int(0)
 
@@ -27,12 +24,15 @@ def calc_index_vector(input_file_name, period_len, lang):
     return index_vector
 
 
+LATIN_LANG_INDEX = 0.0644
+CYRILLIC_LANG_INDEX = 0.0553
+
+
 def calc_key_len(input_file_name, max_key_len, lang):
-    lang_index = 0
-    if lang == "latin":
-        lang_index = 0.0644
+    if lang.type == "latin":
+        lang_index = LATIN_LANG_INDEX
     else:
-        lang_index = 0.0553
+        lang_index = LATIN_LANG_INDEX
     best_key_len, min_diff = -1, 0
 
     for key_len in range(1, max_key_len):
@@ -47,36 +47,41 @@ def calc_key_len(input_file_name, max_key_len, lang):
 
 def calc_keys(input_file_name, model_file_name, key_len, lang):
     keys = [0] * key_len
-    tmp_file_name = "tmp/tmp4.txt"
-    tmp2_file_name = "tmp/tmp5.txt"
+    fake_output_file_name = "temp/calc_keys_temp_file_1.txt"
 
-    for remainder in range(key_len):
-        pos = int(0)
-        with open(tmp_file_name, "w") as output_file:
-            with open(input_file_name, "r") as input_file:
+    with helper.remove_file(fake_output_file_name):
+        for remainder in range(key_len):
+            pos = int(0)
+            with open(fake_output_file_name, "w") as output_file, open(input_file_name, "r") as input_file:
                 for line in input_file:
                     for c in line:
-                        if c.lower() in helper.lang_keeper(lang).alphabet:
+                        if c.lower() in lang.alphabet:
                             if pos == remainder:
                                 output_file.write(c.lower())
                             pos = (pos + 1) % key_len
-        keys[remainder] = hack.hack(tmp_file_name, tmp2_file_name, model_file_name, lang)
+
+            with open(fake_output_file_name, "r") as input_file, open(model_file_name, "r") as model_file:
+                keys[remainder] = hack.hack(input_file, None, model_file, lang, True)
 
     return keys
 
 
-def hack_vigenere(input_file_name, output_file_name, model_file_name, max_key_len, lang):
-    copied_input_file_name = "tmp/tmp3.txt"
-    helper.save_input(input_file_name, copied_input_file_name)
-    input_file_name = copied_input_file_name
+def hack_vigenere(input_file, output_file, model_file, max_key_len, lang):
+    fake_input_file_name = "temp/hack_vigenere_temp_file_1.txt"
+    fake_model_file_name = "temp/hack_vigenere_temp_file_2.txt"
 
-    key_len = calc_key_len(input_file_name, max_key_len, lang)
-    keys = calc_keys(input_file_name, model_file_name, key_len, lang)
-    lang = helper.lang_keeper(lang)
+    with helper.remove_file(fake_input_file_name), helper.remove_file(fake_model_file_name):
+        with open(fake_input_file_name, "w") as fake_input_file:
+            helper.save_input(input_file, fake_input_file)
+        with open(fake_model_file_name, "w") as fake_model_file:
+            helper.save_input(model_file, fake_model_file)
 
-    with open(input_file_name, "r") as input_file:
-        with open(output_file_name, "w") if output_file_name is not None else sys.stdout as output_file:
-            pos = int(0)
+        key_len = calc_key_len(fake_input_file_name, max_key_len, lang)
+        keys = calc_keys(fake_input_file_name, fake_model_file_name, key_len, lang)
+
+        pos = int(0)
+
+        with open(fake_input_file_name, "r") as input_file:
             for line in input_file:
                 for c in line:
                     if c.lower() in lang.alphabet:
