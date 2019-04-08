@@ -2,16 +2,16 @@ def encode_caesar_cipher(input_file, output_file, key, lang):
     key = lang.num_to_alpha[key % len(lang.alphabet)]
 
     for line in input_file:
-        result = ""
-        for c in line:
-            if c.lower() in lang.alphabet:
-                new_c = lang.transform(c.lower(), key)
-                if c.lower() != c:
-                    new_c = new_c.upper()
-                result += new_c
+        result_symbols = []
+        for char in line:
+            if char.lower() in lang.alphabet:
+                new_char = lang.transform(char.lower(), key)
+                if char.lower() != char:
+                    new_char = new_char.upper()
+                result_symbols.append(new_char)
             else:
-                result += c
-        output_file.write(result)
+                result_symbols.append(char)
+        output_file.write("".join(result_symbols))
 
 
 def decode_caesar_cipher(input_file, output_file, key, lang):

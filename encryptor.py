@@ -34,4 +34,5 @@ def run():
         hack_vigenere.hack_vigenere(args.input_file, args.output_file, args.model_file, args.key_max_length, args.language)
 
 
-run()
+if __name__ == "__main__":
+    run()

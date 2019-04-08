@@ -4,21 +4,21 @@ import modules.hack as hack
 
 def calc_index_vector(input_file_name, period_len, lang):
     char_counter = [[0] * len(lang.alphabet) for i in range(period_len)]
-    pos = int(0)
+    pos = 0
 
     with open(input_file_name, "r") as input_file:
         for line in input_file:
-            for c in line:
-                if c.lower() in lang.alphabet:
-                    char_counter[pos][lang.alpha_to_num[c.lower()]] += 1
+            for char in line:
+                if char.lower() in lang.alphabet:
+                    char_counter[pos][lang.alpha_to_num[char.lower()]] += 1
                     pos = (pos + 1) % period_len
 
     index_vector = [0] * period_len
     for i in range(period_len):
-        sum_count = int(0)
-        for c in range(len(lang.alphabet)):
-            sum_count += char_counter[i][c]
-            index_vector[i] += char_counter[i][c] * (char_counter[i][c] - 1)
+        sum_count = 0
+        for char in range(len(lang.alphabet)):
+            sum_count += char_counter[i][char]
+            index_vector[i] += char_counter[i][char] * (char_counter[i][char] - 1)
         index_vector[i] /= sum_count * (sum_count - 1)
 
     return index_vector
@@ -51,13 +51,13 @@ def calc_keys(input_file_name, model_file_name, key_len, lang):
 
     with helper.remove_file(fake_output_file_name):
         for remainder in range(key_len):
-            pos = int(0)
+            pos = 0
             with open(fake_output_file_name, "w") as output_file, open(input_file_name, "r") as input_file:
                 for line in input_file:
-                    for c in line:
-                        if c.lower() in lang.alphabet:
+                    for char in line:
+                        if char.lower() in lang.alphabet:
                             if pos == remainder:
-                                output_file.write(c.lower())
+                                output_file.write(char.lower())
                             pos = (pos + 1) % key_len
 
             with open(fake_output_file_name, "r") as input_file, open(model_file_name, "r") as model_file:
@@ -79,17 +79,17 @@ def hack_vigenere(input_file, output_file, model_file, max_key_len, lang):
         key_len = calc_key_len(fake_input_file_name, max_key_len, lang)
         keys = calc_keys(fake_input_file_name, fake_model_file_name, key_len, lang)
 
-        pos = int(0)
+        pos = 0
 
         with open(fake_input_file_name, "r") as input_file:
             for line in input_file:
-                for c in line:
-                    if c.lower() in lang.alphabet:
-                        reverse_char = lang.num_to_alpha[-keys[pos] % len(lang.alphabet)]
-                        new_c = lang.transform(c.lower(), reverse_char)
-                        if c.lower() != c:
-                            new_c = new_c.upper()
-                        output_file.write(new_c)
+                for char in line:
+                    if char.lower() in lang.alphabet:
+                        reversed_char = lang.num_to_alpha[-keys[pos] % len(lang.alphabet)]
+                        new_char = lang.transform(char.lower(), reversed_char)
+                        if char.lower() != char:
+                            new_char = new_char.upper()
+                        output_file.write(new_char)
                         pos = (pos + 1) % key_len
                     else:
-                        output_file.write(c)
+                        output_file.write(char)

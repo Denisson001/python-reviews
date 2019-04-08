@@ -56,7 +56,7 @@ def stop_encryptor(error_message):
 
 
 def check_args_correctness(args):
-    args.language = lang_keeper(args.language)
+    args.language = LangKeeper(args.language)
 
     if args.mode is None:
         stop_encryptor("mode isn`t setted")
@@ -68,15 +68,15 @@ def check_args_correctness(args):
         if args.cipher == "caesar" or args.cipher == "vernam":
             try:
                 args.key = int(args.key)
-            except:
+            except Exception:
                 stop_encryptor("key isn't an integer")
 
         if args.cipher == "vigenere":
-            if len(args.key) == 0:
+            if not args.key:
                 stop_encryptor("wrong key")
 
-            for c in args.key:
-                if c not in args.language.alphabet:
+            for char in args.key:
+                if char not in args.language.alphabet:
                     stop_encryptor("wrong key")
 
     if args.mode == "train":
@@ -94,26 +94,26 @@ def check_args_correctness(args):
             stop_encryptor("input file and output file are the same")
 
 
-class lang_keeper:
+class LangKeeper:
     def __init__(self, lang):
         self.alpha_to_num = dict()
         self.type = lang
 
         if lang == "latin":
-            for c in range(ord("z") - ord("a") + 1):
-                self.alpha_to_num[chr(c + ord("a"))] = c
+            for char in range(ord("z") - ord("a") + 1):
+                self.alpha_to_num[chr(char + ord("a"))] = char
         elif lang == "cyrillic":
-            for c in range(ord("е") - ord("а") + 1):
-                self.alpha_to_num[chr(c + ord("а"))] = c
+            for char in range(ord("е") - ord("а") + 1):
+                self.alpha_to_num[chr(char + ord("а"))] = char
             self.alpha_to_num["ё"] = 6
-            for c in range(ord("я") - ord("е")):
-                self.alpha_to_num[chr(c + 6 + ord("а"))] = c + 7
+            for char in range(ord("я") - ord("е")):
+                self.alpha_to_num[chr(char + 6 + ord("а"))] = char + 7
 
         self.num_to_alpha = dict(zip(self.alpha_to_num.values(), self.alpha_to_num.keys()))
-        self.alphabet = {c[0] for c in self.alpha_to_num}
+        self.alphabet = {pair[0] for pair in self.alpha_to_num}
 
-    def transform(self, c1, c2):
-        return self.num_to_alpha[(self.alpha_to_num[c1] + self.alpha_to_num[c2]) % len(self.alphabet)]
+    def transform(self, char1, char2):
+        return self.num_to_alpha[(self.alpha_to_num[char1] + self.alpha_to_num[char2]) % len(self.alphabet)]
 
 
 @contextmanager
@@ -131,9 +131,9 @@ def save_input(input_file, output_file):
         output_file.write(line)
 
 
-def standard_deviation(a, b):
-    diff = int(0)
-    min_len = min(len(a), len(b))
+def standard_deviation(vector_a, vector_b):
+    diff = 0
+    min_len = min(len(vector_a), len(vector_b))
     for i in range(min_len):
-        diff += (a[i] - b[i]) ** 2
+        diff += (vector_a[i] - vector_b[i]) ** 2
     return diff / min_len
