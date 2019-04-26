@@ -20,16 +20,20 @@ class MessageManager:
             message.append(str(item))
         self.messages.append(message)
 
+    def add_empty_line(self):
+        self.messages.append(list())
+
     def get_report(self):
         report = list()
         for message in self.messages:
-            message[0] += ': '
+            if len(message):
+                message[0] += ': '
             message.append('\n')
             report.append(''.join(message))
         return ''.join(report)
 
 
-def make_report(data):
+def make_weather_report(data):
     message_manager = MessageManager()
     message_manager.add_message('City', data['location']['name'], ', ', data['location']['country'])
     message_manager.add_message('Local time', data['location']['localtime'])
@@ -48,13 +52,42 @@ def get_image_path(data):
 
 def get_weather(city):
     try:
-        response = requests.get('http://api.apixu.com/v1/current.json', params={'key': key, 'q': city},
-                                timeout=(2.5, 2.5))
+        response = requests.get('http://api.apixu.com/v1/current.json', params={'key': key, 'q': city}, timeout=(2.5, 2.5))
     except Exception:
-        return 'Internal server error', None
+        return 'Weather api error', None
 
     if response.status_code != requests.codes.ok:
         return 'Bad request', None
 
     json_response = json.loads(response.text)
-    return make_report(json_response), get_image_path(json_response)
+    return make_weather_report(json_response), get_image_path(json_response)
+
+
+def make_forecast_report(data):
+    message_manager = MessageManager()
+    message_manager.add_message('City', data['location']['name'], ', ', data['location']['country'])
+    message_manager.add_empty_line()
+    data = data['forecast']['forecastday']
+
+    for day_number in range(len(data)):
+        message_manager.add_message(data[day_number]['date'], data[day_number]['day']['condition']['text'])
+        message_manager.add_message('Minimum temperature', data[day_number]['day']['mintemp_c'], chr(176), 'C')
+        message_manager.add_message('Maximum temperature', data[day_number]['day']['maxtemp_c'], chr(176), 'C')
+        message_manager.add_message('Maximum wind speed', round(data[day_number]['day']['maxwind_mph'] / 3.6, 1), ' mps')
+        message_manager.add_message('Total precipitation', data[day_number]['day']['totalprecip_mm'], ' mm')
+        message_manager.add_empty_line()
+
+    return message_manager.get_report()
+
+
+def get_forecast(city, days):
+    try:
+        response = requests.get('http://api.apixu.com/v1/forecast.json', params={'key': key, 'q': city, 'days': days}, timeout=(2.5, 2.5))
+    except Exception:
+        return 'Weather api error'
+
+    if response.status_code != requests.codes.ok:
+        return 'Bad request'
+
+    json_response = json.loads(response.text)
+    return make_forecast_report(json_response)
