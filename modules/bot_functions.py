@@ -14,6 +14,7 @@ def send_current_user_notifications(bot, chat_id):
     bot.send_message(chat_id, database_message)
     return notifications_count
 
+
 def send_forecast(bot, chat_id, city, days):
     forecast_report = weather.get_forecast(city, days)
     bot.send_message(chat_id, forecast_report)
