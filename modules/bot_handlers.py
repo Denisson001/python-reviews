@@ -104,3 +104,4 @@ def get_forecast_days_number(message):
         bot.send_message(message.chat.id, 'Wrong input format. Operation aborted.')
         return
     func.send_forecast(bot, message.chat.id, forecast_city, forecast_days_number)
+

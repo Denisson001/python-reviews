@@ -1,4 +1,5 @@
 import datetime
+import pytz
 
 
 def apply_time_format(time_value):
@@ -8,20 +9,26 @@ def apply_time_format(time_value):
     return time_value
 
 
+def get_date():
+    tz = pytz.timezone('Europe/Moscow')
+    ctime = datetime.datetime.now(tz)
+    return ctime
+
+
 def get_current_date():
-    ctime = datetime.datetime.now()
+    ctime = get_date()
     current_date = str(ctime.year) + '-' + apply_time_format(ctime.month) + '-' + apply_time_format(ctime.day)
     return current_date
 
 
 def get_tomorrow_date():
-    ctime = datetime.datetime.now() + datetime.timedelta(days=1)
+    ctime = get_date() + datetime.timedelta(days=1)
     current_date = str(ctime.year) + '-' + apply_time_format(ctime.month) + '-' + apply_time_format(ctime.day)
     return current_date
 
 
 def get_current_time():
-    ctime = datetime.datetime.now()
+    ctime = get_date()
     current_date = apply_time_format(ctime.hour) + ':' + apply_time_format(ctime.minute) + ":00"
     return current_date
 

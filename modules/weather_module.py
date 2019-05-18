@@ -91,3 +91,4 @@ def get_forecast(city, days):
 
     json_response = json.loads(response.text)
     return make_forecast_report(json_response)
+

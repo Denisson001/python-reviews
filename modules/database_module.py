@@ -31,7 +31,7 @@ def add_notification(chat_id, city, event_tm):
         cursor.execute('''
             SELECT EXISTS(
                 SELECT chat_id, city, time(update_dttm) as update_tm
-                FROM notifications 
+                FROM notifications
                 WHERE chat_id = {}
                 AND city = {}
                 AND time(update_dttm) = {}
@@ -132,3 +132,4 @@ def remove_notifications(chat_id, notification_numbers):
         connection.commit()
 
     return 'Operation completed successfully!'
+

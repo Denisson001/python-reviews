@@ -22,3 +22,4 @@ def unprocessed_notifications_checker():
 
 def start_polling():
     bot.polling()
+
