@@ -1,6 +1,6 @@
 # Telegram weather bot
 
-## Usage example
+## Usage example 
 
 **Бот уже поднят на `heroku`, его можно найти в телеграме `@Python_review_weather_bot`. Если запустить его у себя с тем же токеном, то на сервере он упадет и сам не запустится.**
 
