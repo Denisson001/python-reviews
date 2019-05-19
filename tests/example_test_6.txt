@@ -1,2 +1,2 @@
-python3 encryptor.py encode --cipher vernam --key 1234567890 --input-file books/orwell_1984_en.txt --output-file input.txt
+python3 encryptor.py encode --cipher vernam --key 1234567890 --input-file books/random_text_en.txt --output-file input.txt
 python3 encryptor.py decode --cipher vernam --key 1234567890 --input-file input.txt --output-file output.txt
