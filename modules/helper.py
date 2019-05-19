@@ -131,7 +131,7 @@ def save_input(input_file, output_file):
         output_file.write(line)
 
 
-def standard_deviation(vector_a, vector_b):
+def euclidean_distance(vector_a, vector_b):
     diff = 0
     min_len = min(len(vector_a), len(vector_b))
     for i in range(min_len):

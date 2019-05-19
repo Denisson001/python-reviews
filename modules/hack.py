@@ -25,6 +25,7 @@ def hack(input_file, output_file, model_file, lang, only_return_key_flag=False):
     best_key, min_diff = -1, 0
     key = 0
     fake_input_file_name = "temp/hack_temp_file_1.txt"
+
     with helper.remove_file(fake_input_file_name):
         with open(fake_input_file_name, "w") as fake_input_file:
             helper.save_input(input_file, fake_input_file)
@@ -35,7 +36,7 @@ def hack(input_file, output_file, model_file, lang, only_return_key_flag=False):
         normalize_vector(new_char_counter)
 
         for i in range(len(lang.alphabet)):
-            diff = helper.standard_deviation(char_counter, new_char_counter)
+            diff = helper.euclidean_distance(char_counter, new_char_counter)
             if best_key == -1 or min_diff > diff:
                 best_key, min_diff = key, diff
             key += 1

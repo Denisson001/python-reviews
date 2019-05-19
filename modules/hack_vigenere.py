@@ -38,7 +38,7 @@ def calc_key_len(input_file_name, max_key_len, lang):
     for key_len in range(1, max_key_len):
         index_vector = calc_index_vector(input_file_name, key_len, lang)
         model_index_vector = [lang_index] * key_len
-        diff = helper.standard_deviation(index_vector, model_index_vector)
+        diff = helper.euclidean_distance(index_vector, model_index_vector)
         if best_key_len == -1 or min_diff > diff:
             best_key_len, min_diff = key_len, diff
 

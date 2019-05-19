@@ -1,4 +1,5 @@
 import sys
+import os
 import modules.caesar as caesar
 import modules.vigenere as vigenere
 import modules.train as train
@@ -35,4 +36,7 @@ def run():
 
 
 if __name__ == "__main__":
+    if not os.path.exists("temp"):
+        os.makedirs("temp")
+    
     run()
