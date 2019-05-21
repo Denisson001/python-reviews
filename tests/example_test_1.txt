@@ -1,0 +1,2 @@
+python3 encryptor.py encode --cipher caesar --key 13 --input-file books/orwell_1984_en.txt --output-file input.txt
+python3 encryptor.py decode --cipher caesar --key 13 --input-file input.txt --output-file output.txt
