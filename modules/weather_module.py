@@ -52,7 +52,7 @@ def get_image_path(data):
 
 def get_weather(city):
     try:
-        response = requests.get('http://api.apixu.com/v1/current.json', params={'key': key, 'q': city}, timeout=(2.5, 2.5))
+        response = requests.get('http://api.apixu.com/v1/current.json', params={'key': key, 'q': city}, timeout=(5, 5))
     except Exception:
         return 'Weather api error', None
 
@@ -82,7 +82,7 @@ def make_forecast_report(data):
 
 def get_forecast(city, days):
     try:
-        response = requests.get('http://api.apixu.com/v1/forecast.json', params={'key': key, 'q': city, 'days': days}, timeout=(2.5, 2.5))
+        response = requests.get('http://api.apixu.com/v1/forecast.json', params={'key': key, 'q': city, 'days': days}, timeout=(5, 5))
     except Exception:
         return 'Weather api error'
 

@@ -42,6 +42,9 @@ def compare_timestamps(dt1, dt2):
     t2 = list(map(int, dt2.split(':')))
     return t1 > t2
 
+MAX_HOUR_VALUE = 24
+MAX_MINUTE_VALUE = 60
+
 
 def check_time_format(time_value):
     if len(time_value) != 5 or time_value[2] != ':':
@@ -49,6 +52,7 @@ def check_time_format(time_value):
     if not (time_value[:2] + time_value[3:]).isdigit():
         return False
     values = list(map(int, time_value.split(':')))
-    if values[0] >= 24 or values[1] >= 60:
+    if values[0] >= MAX_HOUR_VALUE or values[1] >= MAX_MINUTE_VALUE:
         return False
     return True
+

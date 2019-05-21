@@ -37,7 +37,8 @@ def handle_add(message):
 def get_notification_city(message):
     city_dict[message.chat.id] = message.text
     bot.send_message(message.chat.id,
-                     'For what time do you want to make a daily notification?\nUse [hh:mm] time format (without brackets).')
+                     'For what time do you want to make a daily notification?\n' +
+                     'Use [hh:mm] time format (without brackets).')
     bot.register_next_step_handler(message, get_notification_time)
 
 
@@ -62,7 +63,8 @@ def handle_remove(message):
     notifications_count = func.send_current_user_notifications(bot, message.chat.id)
     if notifications_count:
         bot.send_message(message.chat.id,
-                         'Send me notification numbers that you want to remove.\nUse spaces to separate numbers.')
+                         'Send me notification numbers that you want to remove.\n' +
+                         'Use spaces to separate numbers.')
         bot.register_next_step_handler(message, get_notification_numbers)
 
 
@@ -87,8 +89,8 @@ def handle_forecast(message):
 def get_forecast_city(message):
     city_dict[message.chat.id] = message.text
     bot.send_message(message.chat.id,
-                     'For how many days do you want to know the forecast.\nSend a number between 1 and ' + str(
-                         MAX_FORECAST_DAYS_NUMBER) + '.')
+                     'For how many days do you want to know the forecast.\nSend a number between 1 and ' +
+                     str(MAX_FORECAST_DAYS_NUMBER) + '.')
     bot.register_next_step_handler(message, get_forecast_days_number)
 
 

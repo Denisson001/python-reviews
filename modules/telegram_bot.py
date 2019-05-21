@@ -12,12 +12,15 @@ def init_bot(token):
     import modules.bot_handlers
 
 
+UPDATING_GAP = 55
+
+
 def unprocessed_notifications_checker():
     while True:
         notifications = database.get_unprocessed_notifications()
         for notification in notifications:
             func.send_weather(bot, notification[0], notification[1])
-        time.sleep(55)
+        time.sleep(UPDATING_GAP)
 
 
 def start_polling():
