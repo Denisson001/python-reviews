@@ -13,15 +13,13 @@ def get_xor_value():
 def encode_bucket(bucket):
     if bucket < 10:
         return chr(ord('0') + bucket)
-    else:
-        return chr(ord('A') + bucket)
+    return chr(ord('A') + bucket)
 
 
 def decode_bucket(bucket):
-    if bucket >= '0' and bucket <= '9':
+    if '0' <= bucket <= '9':
         return ord(bucket) - ord('0')
-    else:
-        return ord(bucket) - ord('A')
+    return ord(bucket) - ord('A')
 
 
 def encode_to_bytes(char):
@@ -59,3 +57,4 @@ def decode_vernam_cipher(input_file, output_file, key, lang):
             new_char = chr(ord(decode_from_bytes(bytes_tuple)) ^ get_xor_value())
             result_symbols.append(new_char)
         output_file.write("".join(result_symbols))
+
