@@ -2,6 +2,10 @@ import datetime
 import pytz
 
 
+MAX_HOUR_VALUE = 24
+MAX_MINUTE_VALUE = 60
+
+
 def apply_time_format(time_value):
     time_value = str(time_value)
     if len(time_value) == 1:
@@ -42,9 +46,6 @@ def compare_timestamps(dt1, dt2):
     t2 = list(map(int, dt2.split(':')))
     return t1 > t2
 
-MAX_HOUR_VALUE = 24
-MAX_MINUTE_VALUE = 60
-
 
 def check_time_format(time_value):
     if len(time_value) != 5 or time_value[2] != ':':
@@ -55,4 +56,3 @@ def check_time_format(time_value):
     if values[0] >= MAX_HOUR_VALUE or values[1] >= MAX_MINUTE_VALUE:
         return False
     return True
-

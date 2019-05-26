@@ -13,12 +13,12 @@
 Запустить бота
 
 ```
-python3 main.py
+python3 main.py settings.txt database/database.db
 ```
 
 ## Project description
 
-- Для запуска у себя нужно поставить пакет `pip install pytelegrambotapi`.
+- Для запуска у себя нужно поставить пакеты `pip3 install pytelegrambotapi`, `pip3 install pytz`.
 
 - Используется *api* с `apixu.com`.
 

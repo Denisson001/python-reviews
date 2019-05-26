@@ -4,6 +4,10 @@ import modules.bot_functions as func
 import modules.datetime_helper as helper
 
 
+MAX_FORECAST_DAYS_NUMBER = 7
+CITY_DICT = dict()
+
+
 @bot.message_handler(commands=['start', 'help'])
 def handle_start_and_help(message):
     bot.send_message(message.chat.id, 'Hello, ' + message.from_user.first_name + '! I`m the weather bot.\n' +
@@ -25,9 +29,6 @@ def send_weather(message):
     func.send_weather(bot, message.chat.id, message.text)
 
 
-city_dict = dict()
-
-
 @bot.message_handler(commands=['add'])
 def handle_add(message):
     bot.send_message(message.chat.id, 'For what city do you want to make a daily notification?')
@@ -35,7 +36,7 @@ def handle_add(message):
 
 
 def get_notification_city(message):
-    city_dict[message.chat.id] = message.text
+    CITY_DICT[message.chat.id] = message.text
     bot.send_message(message.chat.id,
                      'For what time do you want to make a daily notification?\n' +
                      'Use [hh:mm] time format (without brackets).')
@@ -43,8 +44,8 @@ def get_notification_city(message):
 
 
 def get_notification_time(message):
-    notification_city = city_dict[message.chat.id]
-    del city_dict[message.chat.id]
+    notification_city = CITY_DICT[message.chat.id]
+    del CITY_DICT[message.chat.id]
     if not helper.check_time_format(message.text):
         bot.send_message(message.chat.id, 'Wrong time format. Operation aborted.')
         return
@@ -77,9 +78,6 @@ def get_notification_numbers(message):
         bot.send_message(message.chat.id, 'Wrong input format. Operation aborted.')
 
 
-MAX_FORECAST_DAYS_NUMBER = 7
-
-
 @bot.message_handler(commands=['forecast'])
 def handle_forecast(message):
     bot.send_message(message.chat.id, 'For what city do you want to know the weather forecast?')
@@ -87,7 +85,7 @@ def handle_forecast(message):
 
 
 def get_forecast_city(message):
-    city_dict[message.chat.id] = message.text
+    CITY_DICT[message.chat.id] = message.text
     bot.send_message(message.chat.id,
                      'For how many days do you want to know the forecast.\nSend a number between 1 and ' +
                      str(MAX_FORECAST_DAYS_NUMBER) + '.')
@@ -95,8 +93,8 @@ def get_forecast_city(message):
 
 
 def get_forecast_days_number(message):
-    forecast_city = city_dict[message.chat.id]
-    del city_dict[message.chat.id]
+    forecast_city = CITY_DICT[message.chat.id]
+    del CITY_DICT[message.chat.id]
     try:
         forecast_days_number = int(message.text)
         if forecast_days_number <= 0 or forecast_days_number > MAX_FORECAST_DAYS_NUMBER:
@@ -106,4 +104,3 @@ def get_forecast_days_number(message):
         bot.send_message(message.chat.id, 'Wrong input format. Operation aborted.')
         return
     func.send_forecast(bot, message.chat.id, forecast_city, forecast_days_number)
-

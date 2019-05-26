@@ -3,16 +3,15 @@ import time
 import modules.database_module as database
 import modules.bot_functions as func
 
+
 bot = None
+UPDATING_GAP = 55
 
 
 def init_bot(token):
     global bot
     bot = telebot.TeleBot(token)
     import modules.bot_handlers
-
-
-UPDATING_GAP = 55
 
 
 def unprocessed_notifications_checker():
@@ -25,4 +24,3 @@ def unprocessed_notifications_checker():
 
 def start_polling():
     bot.polling()
-

@@ -1,5 +1,8 @@
-843813507:AAEFhQrStL97XIh1EQlMzgwxlYB1kKQMQlI
-639c2781c03949878fb183846191804
+bot tokem from FatherBOT
+api key from api.apixu.com
+http://api.apixu.com/v1/current.json
+http://api.apixu.com/v1/forecast.json
 
 # first line:  bot-token
 # second line: weather-api-key
+# last lines: weather link, forecast link

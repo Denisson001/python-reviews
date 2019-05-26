@@ -1,12 +1,17 @@
 import requests
 import json
 
-key = None
+
+API_KEY = None
+WEATHER_LINK = None
+FORECAST_LINK = None
 
 
-def init_weather_module(api_key):
-    global key
-    key = api_key
+def init_weather_module(weather_link, forecast_link, api_key):
+    global WEATHER_LINK, FORECAST_LINK, API_KEY
+    WEATHER_LINK = weather_link
+    FORECAST_LINK = forecast_link
+    API_KEY = api_key
 
 
 class MessageManager:
@@ -52,7 +57,7 @@ def get_image_path(data):
 
 def get_weather(city):
     try:
-        response = requests.get('http://api.apixu.com/v1/current.json', params={'key': key, 'q': city}, timeout=(5, 5))
+        response = requests.get(WEATHER_LINK, params={'key': API_KEY, 'q': city}, timeout=(5, 5))
     except Exception:
         return 'Weather api error', None
 
@@ -82,7 +87,7 @@ def make_forecast_report(data):
 
 def get_forecast(city, days):
     try:
-        response = requests.get('http://api.apixu.com/v1/forecast.json', params={'key': key, 'q': city, 'days': days}, timeout=(5, 5))
+        response = requests.get(FORECAST_LINK, params={'key': API_KEY, 'q': city, 'days': days}, timeout=(5, 5))
     except Exception:
         return 'Weather api error'
 
@@ -91,4 +96,3 @@ def get_forecast(city, days):
 
     json_response = json.loads(response.text)
     return make_forecast_report(json_response)
-
